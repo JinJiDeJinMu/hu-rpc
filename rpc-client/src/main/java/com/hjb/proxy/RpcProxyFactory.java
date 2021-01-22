@@ -1,8 +1,17 @@
-package com.hjb.client;
+package com.hjb.proxy;
 
 import com.alibaba.fastjson.JSON;
+import com.hjb.client.MessageClientHandler;
+import com.hjb.client.NettyClient;
+import com.hjb.coder.MessageDecode;
+import com.hjb.coder.MessageEncode;
 import com.hjb.model.Message;
 import com.hjb.model.RpcRequest;
+import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.*;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -60,12 +69,10 @@ public class RpcProxyFactory {
             message.setLength(JSON.toJSONString(request).length());
             message.setContent(JSON.toJSONString(request));
 
+            NettyClient client = new NettyClient();
+            Message result = client.doConnect(message);
 
-            NettyClient nettyClient = new NettyClient();
-            Object result = nettyClient.start(message);
-            System.out.println("hhhhh=" + result);
-
-            return result;
+            return result.getContent();
         }
 
     }

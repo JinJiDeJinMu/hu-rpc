@@ -87,12 +87,11 @@ public class MessageHandler extends SimpleChannelInboundHandler<Message> {
         Object result = null;
         try {
             result = method.invoke(aClass.newInstance(),request.getParams());
-            System.out.println("result = " + result);
             Message heart_message = new Message();
             heart_message.setVersionId(001);
             heart_message.setExtField(001);
             heart_message.setMessageType(1);
-            heart_message.setUuId(UUID.randomUUID().toString());
+            heart_message.setUuId(message.getUuId());
             heart_message.setLength(result.toString().length());
             heart_message.setContent(result.toString());
             ctx.writeAndFlush(heart_message);
